@@ -1,0 +1,74 @@
+<div class="card">
+  <div class="card-header">
+    <h3>Ajouter un nouveau produit</h3>
+  </div>
+  <div class="card-body">
+    <!-- Affichage d'un message d'erreur global si le backend en renvoie un -->
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="produitForm" (ngSubmit)="onSubmit()">
+
+      <!-- Nom du produit -->
+      <div class="mb-3">
+        <label for="nom" class="form-label">Nom du produit</label>
+        <input type="text" id="nom" class="form-control" formControlName="nom">
+        <div *ngIf="produitForm.get('nom')?.invalid && produitForm.get('nom')?.touched" class="text-danger small">
+          Le nom est requis.
+        </div>
+      </div>
+
+      <!-- Prix -->
+      <div class="mb-3">
+        <label for="prix" class="form-label">Prix</label>
+        <input type="number" id="prix" class="form-control" formControlName="prix">
+        <div *ngIf="produitForm.get('prix')?.invalid && produitForm.get('prix')?.touched" class="text-danger small">
+          Le prix est requis et doit être positif.
+        </div>
+      </div>
+
+      <!-- Catégorie -->
+      <div class="mb-3">
+        <label for="categorie" class="form-label">Catégorie</label>
+        <select id="categorie" class="form-select" formControlName="categorie">
+          <option value="" disabled>-- Choisir une catégorie --</option>
+          <option value="Informatique">Informatique</option>
+          <option value="Véhicule">Véhicule</option>
+          <option value="Alimentaire">Alimentaire</option>
+        </select>
+        <div *ngIf="produitForm.get('categorie')?.invalid && produitForm.get('categorie')?.touched" class="text-danger small">
+          La catégorie est requise.
+        </div>
+      </div>
+
+      <!-- Champs conditionnels basés sur la catégorie -->
+      <div *ngIf="produitForm.get('categorie')?.value === 'Informatique'" class="mb-3">
+        <label for="reference" class="form-label">Référence</label>
+        <input type="text" id="reference" class="form-control" formControlName="reference">
+      </div>
+
+      <div *ngIf="produitForm.get('categorie')?.value === 'Véhicule'" class="mb-3">
+        <label for="matricule" class="form-label">Matricule</label>
+        <input type="text" id="matricule" class="form-control" formControlName="matricule">
+      </div>
+
+      <div *ngIf="produitForm.get('categorie')?.value === 'Alimentaire'" class="mb-3">
+        <label for="dateExpiration" class="form-label">Date d'expiration</label>
+        <input type="date" id="dateExpiration" class="form-control" formControlName="dateExpiration">
+      </div>
+
+      <!-- Upload de fichier -->
+      <div class="mb-3">
+        <label for="file" class="form-label">Image du produit (optionnel)</label>
+        <input type="file" id="file" class="form-control" (change)="onFileSelected($event)">
+      </div>
+
+      <hr>
+
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-circle"></i> Enregistrer
+      </button>
+    </form>
+  </div>
+</div>

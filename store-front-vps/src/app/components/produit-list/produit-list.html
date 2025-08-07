@@ -1,0 +1,79 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h3>Liste des produits</h3>
+    <a routerLink="/produits/nouveau" class="btn btn-success">
+      <i class="bi bi-plus-circle"></i> Ajouter un produit
+    </a>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Prix</th>
+          <th>Catégorie</th>
+          <th class="text-end">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let produit of produits">
+          <td>{{ produit.id }}</td>
+          <td>{{ produit.nom }}</td>
+          <td>{{ produit.prix | currency:'EUR' }}</td>
+          <td>{{ produit.categorie }}</td>
+          <td class="text-end">
+            <button class="btn btn-sm btn-primary me-2" (click)="openEditModal(produit)">
+              <i class="bi bi-pencil-square"></i> Modifier
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteProduit(produit.id)">
+              <i class="bi bi-trash"></i> Supprimer
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="produits.length === 0">
+          <td colspan="5" class="text-center">Aucun produit à afficher.</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Fenêtre Modale (Popup) pour la Modification -->
+<div class="modal fade" id="editProduitModal" tabindex="-1" aria-labelledby="editProduitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProduitModalLabel">Modifier le produit #{{ currentProduitId }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="onUpdate()">
+          <div class="mb-3"><label class="form-label">Nom</label><input type="text" class="form-control" formControlName="nom"></div>
+          <div class="mb-3"><label class="form-label">Prix</label><input type="number" class="form-control" formControlName="prix"></div>
+          <div class="mb-3"><label class="form-label">Catégorie</label>
+            <select class="form-select" formControlName="categorie">
+              <option value="Informatique">Informatique</option>
+              <option value="Véhicule">Véhicule</option>
+              <option value="Alimentaire">Alimentaire</option>
+            </select>
+          </div>
+
+          <div *ngIf="editForm.get('categorie')?.value === 'Informatique'"><label class="form-label">Référence</label><input type="text" class="form-control" formControlName="reference"></div>
+          <div *ngIf="editForm.get('categorie')?.value === 'Véhicule'"><label class="form-label">Matricule</label><input type="text" class="form-control" formControlName="matricule"></div>
+          <div *ngIf="editForm.get('categorie')?.value === 'Alimentaire'"><label class="form-label">Date d'expiration</label><input type="date" class="form-control" formControlName="dateExpiration"></div>
+
+          <div class="mb-3"><label for="editFile" class="form-label">Changer l'image (optionnel)</label><input type="file" id="editFile" class="form-control" (change)="onFileSelected($event)"></div>
+
+          <hr>
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">Enregistrer les modifications</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
